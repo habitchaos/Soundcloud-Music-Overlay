@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soundcloud Mobile UI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #404040;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Inter, sans-serif;
+        }
+        .canvas-wrapper {
+            padding: 10px 100px; /* Adjust this value to create more space around the container */
+            background-color: transparent; /* Match the background color */
+        }
+        .container {
+            position: relative; /* Changed to relative for absolute positioning */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .title-container, .subtitle-container {
+            background-color: #000000;
+            padding: 10px;
+            margin: 5px;
+            text-align: left;
+            width: auto;
+            margin-right: auto;
+            margin-top: -5.0px;
+            position: relative;
+        }
+        .title {
+            color: #ffffff;
+            font-size: 24px;
+            font-weight: 600;
+        }
+        .subtitle {
+            color: #CCCCCC;
+            font-size: 20px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+        }
+        .behindcontainer {
+            background-color: #000000;
+            padding: 10px;
+            margin: 5px;
+            text-align: left;
+            width: auto;
+            margin-right: auto;
+            margin-top: 2px;
+            display: flex;
+            align-items: center;
+        }
+        .icon-container {
+            margin-right: 5px;
+            color: white;
+        }
+        .behindthetrack {
+            color: #CCCCCC;
+            font-size: 20px;
+        }
+        .button {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(to bottom, #fd5700, #ff2200);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
+            border: 2px solid rgb(204, 68, 0);
+            cursor: pointer;
+            position: absolute;
+            top: 11px; /* Adjust this value to align with the title */
+            left: 23px; /* Adjust this value to align with the title */
+        }
+        .play-icon::before {
+            content: '';
+            width: 0;
+            height: 0;
+            position: relative;
+            left: -0.03em;
+            border-left: 28px solid white;
+            border-top: 22px solid transparent;
+            border-bottom: 22px solid transparent;
+            margin-left: 7px;
+        }
+        .pause-icon::before, .pause-icon::after {
+            content: '';
+            width: 10px;
+            height: 35px;
+            background-color: white;
+            position: relative;
+        }
+        .pause-icon::before {
+            left: 0.88em;
+        }
+        .pause-icon::after {
+            right: 0.88em;
+        }
+        .bottom-button-container {
+            position: absolute;
+            bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        .verified-badge {
+            width: 20px;
+            height: 20px;
+            background-color: #2C96FF;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 8px;
+        }
+        .verified-badge::after {
+            content: "✔";
+            color: #fff;
+            font-size: 12px;
+            margin-top: -0.08em;
+        }
+        .action-button {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            position: relative;
+            top: 200px;
+        }
+        .action-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script>
+        function toggleIcon() {
+            const button = document.getElementById('button');
+            const playAudio = document.getElementById('playSound');
+            const pauseAudio = document.getElementById('pauseSound');
+            
+            if (button.classList.contains('play-icon')) {
+                playAudio.currentTime = 0; // Reset play audio to the beginning
+                playAudio.play();
+                button.classList.remove('play-icon');
+                button.classList.add('pause-icon');
+            } else {
+                pauseAudio.currentTime = 0; // Reset pause audio to the beginning
+                pauseAudio.play();
+                button.classList.remove('pause-icon');
+                button.classList.add('play-icon');
+            }
+        }
+        function toggleBadge() {
+            const badge = document.getElementById('verifiedBadge');
+            badge.style.display = badge.style.display === 'none' ? 'flex' : 'none';
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('verifiedBadge').style.display = 'none';
+        });
+
+        function saveAsPng() {
+            const audio = document.getElementById('downloadSound');
+            audio.currentTime = 0; // Reset audio to the beginning
+            audio.play();
+
+            const wrapper = document.querySelector('.container');
+            html2canvas(wrapper, { backgroundColor: null, scale: 3 }).then(canvas => {
+                const link = document.createElement('a');
+                link.href = canvas.toDataURL('image/png');
+                link.download = 'music-display.png';
+                link.click();
+            });
+        }
+    </script>
+</head>
+<body>
+    <div class="container canvas-wrapper">
+        <div id="button" class="button play-icon" onclick="toggleIcon()"></div>
+        <div class="title-container">
+            <div class="title">Blank Song</div>
+        </div>
+
+        <audio id="playSound" src="aud/playbuttonsound.mp3"></audio>
+        <audio id="pauseSound" src="aud/pausebuttonsound.mp3"></audio>
+        <audio id="downloadSound" src="aud/ring.mp3"></audio>
+
+        <div class="subtitle-container">
+            <div class="subtitle">Blank Artist
+                <span class="verified-badge" id="verifiedBadge"></span>
+            </div>
+        </div>
+        <div class="behindcontainer">
+            <div class="icon-container">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-soundwave" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M8.5 2a.5.5 0 0 1 .5.5v11a.5.5 0 0 1-1 0v-11a.5.5 0 0 1 .5-.5m-2 2a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5m4 0a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5m-6 1.5A.5.5 0 0 1 5 6v4a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m8 0a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m-10 1A.5.5 0 0 1 3 7v2a.5.5 0 0 1-1 0V7a.5.5 0 0 1 .5-.5m12 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0V7a.5.5 0 0 1 .5-.5"/>
+                </svg>
+            </div>
+            <div class="behindthetrack">Behind this track</div>
+        </div>
+        <div class="bottom-button-container">
+            <button class="action-button" onclick="toggleBadge()">Toggle Verified Badge</button>
+            <button class="action-button" onclick="saveAsPng()">Save as .png</button>
+        </div>
+    </div>
+</body>
+</html>
